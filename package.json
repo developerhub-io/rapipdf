@@ -8,9 +8,6 @@
   "bugs": "https://github.com/kingjan1999/rapipdf-cli/issues",
   "dependencies": {
     "@kingjan1999/pdfmake": "^0.2.0-alpha.2",
-    "@oclif/command": "^1",
-    "@oclif/config": "^1",
-    "@oclif/plugin-help": "^3",
     "html-to-pdfmake": "^2.1.2",
     "js-yaml": "^4.0.0",
     "jsdom": "^16.4.0",
@@ -43,20 +40,12 @@
     "/dist"
   ],
   "homepage": "https://github.com/kingjan1999/rapipdf-cli",
-  "keywords": [
-    "oclif"
-  ],
   "license": "MIT",
   "main": "dist/index.js",
-  "oclif": {
-    "bin": "rapipdf"
-  },
   "repository": "kingjan1999/rapipdf-cli",
   "scripts": {
     "posttest": "eslint .",
-    "prepack": "oclif-dev readme",
     "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
-    "version": "oclif-dev readme && git add README.md",
     "build": "babel src -d dist"
   }
 }
