@@ -107,7 +107,7 @@ function generatePropDescription(propDescrArray, localize) {
   if (propDescrArray[4]) {
     descrStack.push({
       text: [
-        { text: `${localize.allowed}:`, style: ['sub', 'b', 'darkGray'] },
+        { text: `${localize.allowed}: `, style: ['sub', 'b', 'darkGray'] },
         { text: propDescrArray[4], style: ['small', 'lightGray', 'mono'] },
       ],
     });
