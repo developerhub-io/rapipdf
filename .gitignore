@@ -10,3 +10,4 @@ imgs/
 pdfs/
 swagger-itn.json
 rapipdf.config.example-itn.json
+test/output

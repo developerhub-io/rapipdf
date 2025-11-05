@@ -1,0 +1,2602 @@
+{
+  "openapi": "3.2.0",
+  "info": {
+    "title": "API",
+    "version": "1.0.1",
+    "description": "API to manage your %product% resources programmatically. Using these APIs, you are able to manage pages, integrate with CI/CD, and retrieve resources among other operations.\n\nAll operations require an API key, read [Authentication](/api#authentication).\n\nAll operations (except [Search content](/api#search)) must be called from a back-end. Cross-origin requests are not allowed.",
+    "contact": {}
+  },
+  "servers": [
+    {
+      "url": "https://api.developerhub.io/api/v1"
+    }
+  ],
+  "paths": {
+    "/reference/{id}/definition": {
+      "get": {
+        "tags": [
+          "Reference"
+        ],
+        "parameters": [
+          {
+            "style": "simple",
+            "name": "id",
+            "description": "The reference ID",
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "draft",
+            "description": "Get draft definition",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "format",
+            "description": "Get definition in format",
+            "schema": {
+              "default": "auto",
+              "enum": [
+                "auto",
+                "yaml",
+                "json"
+              ],
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "OpenAPI definition",
+                  "type": "object",
+                  "example": {
+                    "openapi": 1,
+                    "info": {
+                      "version": "1.0.0",
+                      "title": "API"
+                    },
+                    "paths": {
+                      "/list": {
+                        "get": {
+                          "description": "Gets the items"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "text/yaml": {
+                "schema": {
+                  "description": "OpenAPI definition",
+                  "type": "object",
+                  "example": {
+                    "openapi": 1,
+                    "info": {
+                      "version": "1.0.0",
+                      "title": "API"
+                    },
+                    "paths": {
+                      "/list": {
+                        "get": {
+                          "description": "Gets the items"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "read_reference",
+        "summary": "Read reference",
+        "description": "Reads a reference definition. Permission: `reference.read`. Rate limit: 600 in 60 seconds."
+      }
+    },
+    "/documentation/{id}/page": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Page object",
+                "required": [
+                  "title",
+                  "content"
+                ],
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Title of the page",
+                    "type": "string",
+                    "example": "Getting Started"
+                  },
+                  "slug": {
+                    "description": "Slug in the URL. Generated if it was not provided",
+                    "type": "string",
+                    "example": "getting-started"
+                  },
+                  "content": {
+                    "description": "Draft contents of the page in [Darkdown format](https://docs.developerhub.io/support-center/exporting-documentation#darkdown)",
+                    "type": "string",
+                    "example": "Let's start here\n\n## Step 1\nWelcome to **DeveloperHub**\n"
+                  },
+                  "categoryTitle": {
+                    "description": "To append the page to a category, provide the pre-existing category title here (case insensitive)",
+                    "type": "string",
+                    "example": "Installation"
+                  },
+                  "message": {
+                    "description": "Page history message",
+                    "default": "Created using API",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": [
+          "Page"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Documentation ID",
+            "schema": {
+              "type": "integer"
+            },
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnsupportedContentType"
+                }
+              }
+            },
+            "description": "Unsupported content-type"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "create_page",
+        "summary": "Create a page",
+        "description": "Creates a page with draft contents. To insert in a pre-existing category, set the `categoryTitle`. Rate limit: 10800 in 1 hour. Permission: `page.edit`"
+      }
+    },
+    "/page/{id}/publish": {
+      "put": {
+        "tags": [
+          "Page"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Page ID",
+            "schema": {
+              "type": "integer"
+            },
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnsupportedContentType"
+                }
+              }
+            },
+            "description": "Unsupported content-type"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "publish_page",
+        "summary": "Publish a page",
+        "description": "Publishes a page from its draft contents. Rate limit: 10800 in 1 hour. Permission: `page.publish`"
+      }
+    },
+    "/version": {
+      "get": {
+        "tags": [
+          "Version"
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "OK",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Version"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "list_versions",
+        "summary": "Lists all project versions",
+        "description": "Lists all project versions that are accessible through the API Key. This will only list non-deleted versions. Rate limit: 60 in 60 minutes. Permission: `project.read`"
+      }
+    },
+    "/version/{id}": {
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Version object",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Name of the version",
+                    "type": "string",
+                    "example": "v1.0"
+                  },
+                  "slug": {
+                    "description": "Slug in the URL",
+                    "type": "string",
+                    "example": "v1.0"
+                  },
+                  "published": {
+                    "description": "True if it can be viewed by readers",
+                    "type": "boolean",
+                    "example": true
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": [
+          "Version"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Version ID",
+            "schema": {
+              "type": "integer"
+            },
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Version"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnsupportedContentType"
+                }
+              }
+            },
+            "description": "Unsupported content-type"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "update_version",
+        "summary": "Update a version",
+        "description": "Updates a version. Enables you to publish or unpublish a version. Rate limit: 3600 in 1 hour. Permission: `version.publish`"
+      }
+    },
+    "/version/{versionId}/documentation": {
+      "get": {
+        "tags": [
+          "Documentation"
+        ],
+        "parameters": [
+          {
+            "style": "simple",
+            "name": "versionId",
+            "description": "The version ID",
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "OK",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Documentation"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "list_documentation",
+        "summary": "Lists all documentation section under version",
+        "description": "Lists all documentation sections under the version. This will only list non-deleted documentation sections. Rate limit: 60 in 60 minutes. Permission: `project.read`"
+      }
+    },
+    "/reference/{id}/publish": {
+      "put": {
+        "tags": [
+          "Reference"
+        ],
+        "parameters": [
+          {
+            "style": "simple",
+            "name": "id",
+            "description": "The reference ID",
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Reference"
+                }
+              }
+            },
+            "description": "Published"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "General Exception"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "publish_reference",
+        "summary": "Publish API reference",
+        "description": "Publishes the draft of an API reference. Rate limit: 3600 in 1 hour. Permission: `reference.publish`"
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "OK",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Client Error"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "get_users",
+        "summary": "Get users",
+        "description": "Get all users and their roles. Rate limit: 3600 in 60 minutes. Permission: `project.read`"
+      }
+    },
+    "/reader-access": {
+      "get": {
+        "tags": [
+          "Reader Access"
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Reader access details",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReaderAccess"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Client Error"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "get_reader_access",
+        "summary": "Get access details of all invited readers",
+        "description": "Get access details of all invited readers. Rate limit: 3600 in 60 minutes. Permission: `access.read`"
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Reader access object",
+                "required": [
+                  "email"
+                ],
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "description": "Email address of reader",
+                    "type": "string",
+                    "example": "peter@example.com"
+                  },
+                  "expiresAt": {
+                    "description": "Date of expiry in Y-m-d\\TH:i:sP format",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "example": "2022-01-01T03:02:01+0000"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": [
+          "Reader Access"
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReaderAccess"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnsupportedContentType"
+                }
+              }
+            },
+            "description": "Unsupported content-type"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "create_reader_access",
+        "summary": "Grant access to reader",
+        "description": "Grants access to reader. Only applicable when project is protected by \"Email Invite\". Rate limit: 100 in 60 minutes. Permission: `access.write`"
+      },
+      "patch": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Reader access object",
+                "required": [
+                  "email"
+                ],
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "description": "Email address of reader",
+                    "type": "string",
+                    "example": "peter@example.com"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": [
+          "Reader Access"
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReaderAccess"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnsupportedContentType"
+                }
+              }
+            },
+            "description": "Unsupported content-type"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "revoke_reader_access",
+        "summary": "Revoke access to reader",
+        "description": "Revokes access to reader. Rate limit: 100 in 60 minutes. Permission: `access.write`"
+      }
+    },
+    "/page": {
+      "get": {
+        "tags": [
+          "Page"
+        ],
+        "parameters": [
+          {
+            "name": "version_id",
+            "description": "Version ID.",
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "version_slug",
+            "description": "Version Slug.",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "documentation_id",
+            "description": "Documentation ID.",
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "documentation_slug",
+            "description": "Documentation Slug.",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "page_slug",
+            "description": "Page Slug.",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": true
+          },
+          {
+            "name": "format",
+            "description": "Format type",
+            "schema": {
+              "default": "darkdown",
+              "enum": [
+                "darkdown",
+                "markdown",
+                "html",
+                "text"
+              ],
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "get_page",
+        "summary": "Get page by slug",
+        "description": "Get a page by slugs and read its content in [Darkdown](https://docs.developerhub.io/support-center/exporting-documentation#darkdown), markdown, HTML, or text format. Rate limit: 60 in 1 minute.\n\nEither `version_id` or `version_slug` must be provided. Either `documentation_id` or `documentation_slug` must be provided. Permission: `page.read`\n"
+      }
+    },
+    "/page/{id}": {
+      "get": {
+        "tags": [
+          "Page"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Page ID",
+            "schema": {
+              "type": "integer"
+            },
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "format",
+            "description": "Format type",
+            "schema": {
+              "default": "darkdown",
+              "enum": [
+                "darkdown",
+                "markdown",
+                "html",
+                "text"
+              ],
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "read_page",
+        "summary": "Read page",
+        "description": "Read a page including its content in [Darkdown](https://docs.developerhub.io/support-center/exporting-documentation#darkdown), markdown, HTML, or text format. Rate limit: 600 in 1 minute. Permission: `page.read`"
+      },
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Page object",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Title of the page",
+                    "type": "string",
+                    "example": "Getting Started"
+                  },
+                  "slug": {
+                    "description": "Slug in the URL. Generated if it was not provided",
+                    "type": "string",
+                    "example": "getting-started"
+                  },
+                  "content": {
+                    "description": "Draft contents of the page in [Darkdown format](https://docs.developerhub.io/support-center/exporting-documentation#darkdown)",
+                    "type": "string",
+                    "example": "Let's start here\n\n## Step 1\nWelcome to **DeveloperHub**\n"
+                  },
+                  "message": {
+                    "description": "Page history message",
+                    "default": "Updated using API",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": [
+          "Page"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Page ID",
+            "schema": {
+              "type": "integer"
+            },
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnsupportedContentType"
+                }
+              }
+            },
+            "description": "Unsupported content-type"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "update_page",
+        "summary": "Update a page",
+        "description": "Updates a page title, slug or draft contents. Rate limit: 10800 in 1 hour. Permission: `page.edit`"
+      }
+    },
+    "/search": {
+      "query": {
+        "tags": [
+          "Project"
+        ],
+        "parameters": [
+          {
+            "example": "variables",
+            "name": "query",
+            "description": "Search query",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": true
+          },
+          {
+            "example": "v1.0",
+            "name": "version_slug",
+            "description": "Slug of the version to be searched. To use always the default published version, use 'latest'. Omit to search in the entire project",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "example": "docs",
+            "name": "section_slug",
+            "description": "Slug of the section to be searched. Omit to search in the entire version. If `version_slug` is not set, the default published version would be used.",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "example": "doc",
+            "name": "section_type",
+            "description": "Type of the section. `doc` for documentation or `ref` for reference. Must be specified when `section_slug` is set.",
+            "schema": {
+              "enum": [
+                "doc",
+                "ref"
+              ],
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "example": 1,
+            "name": "page",
+            "description": "Specify the page to retrieve. Numbering starts from 0.",
+            "schema": {
+              "default": 0,
+              "type": "integer"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "example": 20,
+            "name": "hits",
+            "description": "Number of hits to retrieve.",
+            "schema": {
+              "default": 20,
+              "type": "integer"
+            },
+            "in": "query",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResult"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Client Error"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "operationId": "search",
+        "summary": "Search content",
+        "description": "Searches through project or version. Use this to build custom search into your own website/services which directs users to documentation. Minimum plan required is Grow plan. Rate limit: 10,800 in 60 minutes. This endpoint can also be called using `get` method. Permission: `search`"
+      }
+    },
+    "/all": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "parameters": [
+          {
+            "name": "published",
+            "description": "When true, only lists published items.",
+            "schema": {
+              "type": "boolean"
+            },
+            "in": "query"
+          },
+          {
+            "name": "versionId",
+            "description": "The version to get all resources from. Use `latest` to automatically choose the default version.",
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllProject"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "all_project",
+        "summary": "Get all resources",
+        "description": "Returns all pages, documentation, references and versions of your project. Rate limit: 30 in 60 minutes. Permission: `project.read`"
+      }
+    },
+    "/audit": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "parameters": [
+          {
+            "example": [
+              "content"
+            ],
+            "name": "scopes",
+            "description": "Scope of the audit logs.",
+            "schema": {
+              "default": "content",
+              "enum": [
+                "content",
+                "users",
+                "hosting",
+                "security",
+                "plan",
+                "other"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "example": "2021-01-24T17:06:24+00:00",
+            "name": "max_date",
+            "description": "Maximum date to retrieve audits in Y-m-d\\TH:i:sP format. Note that \"+\" character must be encoded to \"%2B\"",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "example": 20,
+            "name": "hits",
+            "description": "Number of hits to retrieve. Maximum is 100",
+            "schema": {
+              "default": 20,
+              "type": "integer"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "example": "XAr",
+            "name": "cursor",
+            "description": "Cursor for next page of results",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Audit"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Client Error"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "get_audit_log",
+        "summary": "Get audit log",
+        "description": "Query the audit log. Only available in enterprise plans. Rate limit: 600 in 60 minutes. Permission: `audit.read`"
+      }
+    },
+    "/version/{versionId}/reference": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "format": "binary",
+                    "description": "The API specification in OpenAPI 2/3 (Swagger) format",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "tags": [
+          "Reference"
+        ],
+        "parameters": [
+          {
+            "style": "simple",
+            "name": "versionId",
+            "description": "The version ID",
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "publish",
+            "description": "By default true, set to false to write a draft instead. Permission needed would be `reference.edit`.",
+            "schema": {
+              "default": true,
+              "type": "boolean"
+            },
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "201": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Reference"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "General Exception"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "add_reference",
+        "summary": "Adds or updates an API reference",
+        "description": "Adds or updates an API reference in that version. If the reference title matches one that already existed, then it is updated. Changes are published and do not pass through a draft state. Rate limit: 300 in 60 minutes. Permission: `reference.publish`"
+      }
+    },
+    "/export": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "parameters": [
+          {
+            "name": "format",
+            "description": "Format type",
+            "schema": {
+              "default": "darkdown",
+              "enum": [
+                "darkdown",
+                "markdown"
+              ],
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "example": "v1.0",
+            "name": "version_slug",
+            "description": "Provide version slug if you wish to export a specific version only",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "format": "binary",
+                  "description": "OK",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Upgrade Plan"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequests"
+                }
+              }
+            },
+            "description": "Too many requests"
+          }
+        },
+        "deprecated": false,
+        "operationId": "export_project",
+        "summary": "Exports project",
+        "description": "Exports the project into a ZIP file. Only available for enterprise plans. Rate limit: 10 in 60 minutes. Permission: `project.export`"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Page": {
+        "title": "Page",
+        "description": "Page object",
+        "required": [
+          "id",
+          "listed",
+          "title",
+          "created",
+          "updated",
+          "slug",
+          "contentDraft",
+          "contentPublished"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Unique identifier",
+            "type": "integer",
+            "example": 86123
+          },
+          "listed": {
+            "description": "True if it can be viewed by readers if the version is published",
+            "type": "boolean",
+            "example": true
+          },
+          "title": {
+            "description": "Title of the page",
+            "type": "string",
+            "example": "Getting Started"
+          },
+          "created": {
+            "description": "Date of creation",
+            "type": "string",
+            "example": "2019-03-20T19:02:14+0000"
+          },
+          "updated": {
+            "description": "Date of last update",
+            "type": "string",
+            "example": "2019-03-20T19:02:14+0000"
+          },
+          "slug": {
+            "description": "Slug in the URL",
+            "type": "string",
+            "example": "getting-started"
+          },
+          "contentDraft": {
+            "description": "Draft content in the selected format",
+            "type": "string",
+            "example": "This is the page contents"
+          },
+          "contentPublished": {
+            "description": "Published content in the selected format",
+            "type": "string",
+            "example": "This is the page contents"
+          },
+          "path": {
+            "description": "Path of the page without the project basepath (if any)",
+            "type": "string",
+            "example": "v1.0/support-center/getting-started"
+          }
+        }
+      },
+      "User": {
+        "title": "User",
+        "description": "User object",
+        "required": [
+          "id",
+          "email",
+          "role",
+          "name",
+          "lastActiveAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Unique identifier",
+            "type": "integer",
+            "example": 3609
+          },
+          "name": {
+            "description": "User name",
+            "type": "string",
+            "example": "Peter Griffin"
+          },
+          "email": {
+            "description": "User e-mail address",
+            "type": "string",
+            "example": "peter@example.com"
+          },
+          "role": {
+            "description": "Role of user",
+            "enum": [
+              "ADMIN",
+              "PUBLISHER",
+              "WRITER",
+              "REVIEWER"
+            ],
+            "type": "string",
+            "example": "ADMIN"
+          },
+          "lastActiveAt": {
+            "description": "Date of last time user accessed DeveloperHub",
+            "type": "string",
+            "example": "2021-03-20T19:02:14+0000"
+          }
+        }
+      },
+      "Version": {
+        "title": "Version",
+        "description": "Version object",
+        "required": [
+          "id",
+          "published",
+          "name",
+          "created",
+          "updated",
+          "slug",
+          "ordr"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Unique identifier",
+            "type": "integer",
+            "example": 4
+          },
+          "published": {
+            "description": "True if it can be viewed by readers",
+            "type": "boolean",
+            "example": true
+          },
+          "name": {
+            "description": "Name of the version",
+            "type": "string",
+            "example": "v1.0"
+          },
+          "created": {
+            "description": "Date of creation",
+            "type": "string",
+            "example": "2019-03-20T19:02:14+0000"
+          },
+          "updated": {
+            "description": "Date of last update",
+            "type": "string",
+            "example": "2019-03-20T19:02:14+0000"
+          },
+          "slug": {
+            "description": "Slug in the URL",
+            "type": "string",
+            "example": "developerhub.io-api"
+          },
+          "ordr": {
+            "description": "Numerical order in the project",
+            "type": "integer",
+            "example": 4
+          }
+        }
+      },
+      "Documentation": {
+        "title": "Documentation",
+        "description": "Documentation object",
+        "required": [
+          "id",
+          "title",
+          "published",
+          "created",
+          "updated",
+          "slug",
+          "ordr"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Unique identifier",
+            "type": "integer",
+            "example": 1000
+          },
+          "title": {
+            "description": "Title of the documentation",
+            "type": "string",
+            "example": "Support Center"
+          },
+          "published": {
+            "description": "True if it can be viewed by readers",
+            "type": "boolean",
+            "example": true
+          },
+          "created": {
+            "description": "Date of creation",
+            "type": "string",
+            "example": "2019-03-20T19:02:14+0000"
+          },
+          "updated": {
+            "description": "Date of last update",
+            "type": "string",
+            "example": "2019-03-20T19:02:14+0000"
+          },
+          "slug": {
+            "description": "Slug in the URL",
+            "type": "string",
+            "example": "support-center"
+          },
+          "ordr": {
+            "description": "Numerical order in the version",
+            "type": "integer",
+            "example": 4
+          }
+        }
+      },
+      "Reference": {
+        "title": "Reference",
+        "description": "Reference object",
+        "required": [
+          "id",
+          "title",
+          "created",
+          "updated",
+          "slug",
+          "ordr"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Unique identifier",
+            "type": "integer",
+            "example": 5
+          },
+          "title": {
+            "description": "Title of the API Reference",
+            "type": "string",
+            "example": "DeveloperHub.io API"
+          },
+          "created": {
+            "description": "Date of creation",
+            "type": "string",
+            "example": "2019-03-20T19:02:14+0000"
+          },
+          "updated": {
+            "description": "Date of last update",
+            "type": "string",
+            "example": "2019-03-20T19:02:14+0000"
+          },
+          "slug": {
+            "description": "Slug in the URL",
+            "type": "string",
+            "example": "developerhub.io-api"
+          },
+          "ordr": {
+            "description": "Numerical order in the version",
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "SearchResult": {
+        "title": "SearchResult",
+        "required": [
+          "hits",
+          "nbHits",
+          "page",
+          "nbPages",
+          "hitsPerPage",
+          "query",
+          "basepath"
+        ],
+        "type": "object",
+        "properties": {
+          "hits": {
+            "type": "array",
+            "items": {
+              "required": [
+                "content",
+                "title",
+                "sectionType",
+                "version",
+                "section",
+                "path"
+              ],
+              "type": "object",
+              "properties": {
+                "content": {
+                  "description": "Content where hit was found",
+                  "type": "string",
+                  "example": "To use project variables in an API Reference, replace all occurrences of the variable with the variable reference. For example, one definition property could be:\nversion:\n    type: string\n    description: Version of the API\n    example: \"%versions.last_version%\"\n\n\nWarning\nNote that YAML requires you to use double quotations to escape a string containing percent sign.\nKnown Limitations\n\nVariables do not work as HREFs for links.\n"
+                },
+                "title": {
+                  "description": "Title of the hit. It is either the page title or the heading title for the hit if it is in a documentation page, or the name of the operation if it was in an API reference.",
+                  "type": "string",
+                  "example": "Using Project Variables in References"
+                },
+                "sectionType": {
+                  "description": "Type of section: 'doc' for documentation or 'ref' for reference",
+                  "enum": [
+                    "doc",
+                    "ref"
+                  ],
+                  "type": "string",
+                  "example": "doc"
+                },
+                "version": {
+                  "description": "Name of version",
+                  "type": "string",
+                  "example": "v1.0"
+                },
+                "section": {
+                  "description": "Name of section",
+                  "type": "string",
+                  "example": "Support Center"
+                },
+                "page": {
+                  "description": "Name of page",
+                  "type": "string",
+                  "example": "Variables"
+                },
+                "pageId": {
+                  "description": "Page ID",
+                  "type": "number",
+                  "example": 86444
+                },
+                "fragment": {
+                  "description": "URL fragment",
+                  "type": "string",
+                  "example": "using-project-variables-in-references"
+                },
+                "path": {
+                  "description": "Path, without the host, to direct the user to to find the content",
+                  "type": "string",
+                  "example": "/v1.0/support-center/variables#using-project-variables-in-references"
+                }
+              }
+            }
+          },
+          "nbHits": {
+            "description": "Number of hits retrieved",
+            "type": "integer",
+            "example": 20
+          },
+          "page": {
+            "description": "Current page",
+            "type": "integer",
+            "example": 1
+          },
+          "nbPages": {
+            "description": "Number of pages that can be searched for this query",
+            "type": "integer",
+            "example": 3
+          },
+          "hitsPerPage": {
+            "description": "Number of hits per page",
+            "type": "integer",
+            "example": 20
+          },
+          "query": {
+            "description": "Query used",
+            "type": "string",
+            "example": "variables"
+          },
+          "basepath": {
+            "description": "Basepath of the project, if any.",
+            "type": "string",
+            "example": "docs"
+          },
+          "host": {
+            "description": "Host of the project including scheme.",
+            "type": "string",
+            "example": "https://docs.pied-piper.com"
+          }
+        }
+      },
+      "AccessDenied": {
+        "title": "AccessDenied",
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "description": "Message of the error",
+                "type": "string",
+                "example": "Access Denied"
+              },
+              "httpCode": {
+                "description": "HTTP code returned",
+                "type": "number",
+                "example": 403
+              },
+              "code": {
+                "description": "Internal error code",
+                "type": "number",
+                "example": 403
+              }
+            }
+          }
+        }
+      },
+      "UnsupportedContentType": {
+        "title": "UnsupportedContentType",
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "description": "Message of the error",
+                "type": "string",
+                "example": "Unsupported content-type 'form'. Supported content-type is 'application/json'."
+              },
+              "httpCode": {
+                "description": "HTTP code returned",
+                "type": "number",
+                "example": 415
+              },
+              "code": {
+                "description": "Internal error code",
+                "type": "number",
+                "example": 415
+              }
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "title": "TooManyRequests",
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "description": "Message of the error",
+                "type": "string",
+                "example": "You exceeded the rate limit"
+              },
+              "httpCode": {
+                "description": "HTTP code returned",
+                "type": "number",
+                "example": 429
+              },
+              "code": {
+                "description": "Internal error code",
+                "type": "number",
+                "example": 9
+              }
+            }
+          }
+        }
+      },
+      "Error": {
+        "title": "Error",
+        "type": "object",
+        "properties": {
+          "message": {
+            "description": "Message of the error",
+            "type": "string",
+            "example": "No file provided."
+          },
+          "httpCode": {
+            "description": "HTTP code returned",
+            "type": "number",
+            "example": 400
+          },
+          "code": {
+            "description": "Internal error code",
+            "type": "number",
+            "example": 400
+          }
+        }
+      },
+      "Audit": {
+        "required": [
+          "data",
+          "count",
+          "total",
+          "cursor"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "title": "Audit Log",
+              "description": "Audit log object",
+              "required": [
+                "ipAddress",
+                "entity",
+                "entityId",
+                "details",
+                "scope",
+                "message",
+                "operation",
+                "timestamp"
+              ],
+              "type": "object",
+              "properties": {
+                "ipAddress": {
+                  "description": "IP Address of the user who made the change",
+                  "type": "string",
+                  "example": "81.123.55.209"
+                },
+                "entity": {
+                  "description": "Type of entity.",
+                  "enum": [
+                    "page",
+                    "documentation",
+                    "reference",
+                    "version",
+                    "project",
+                    "landing-page",
+                    "index",
+                    "project-import",
+                    "project-user"
+                  ],
+                  "type": "string",
+                  "example": "page"
+                },
+                "entityId": {
+                  "description": "ID of entity",
+                  "type": "string",
+                  "example": "452"
+                },
+                "details": {
+                  "description": "Changes to the entity",
+                  "type": "object"
+                },
+                "scope": {
+                  "description": "Scope of the change",
+                  "type": "string",
+                  "example": "content"
+                },
+                "message": {
+                  "description": "Message describing the change",
+                  "type": "string",
+                  "example": "edited"
+                },
+                "operation": {
+                  "description": "Operation of the change",
+                  "enum": [
+                    "INS",
+                    "UPD",
+                    "DEL",
+                    "READ",
+                    "ADD",
+                    "REM"
+                  ],
+                  "type": "string",
+                  "example": "INS"
+                },
+                "timestamp": {
+                  "description": "Date of change",
+                  "type": "string",
+                  "example": "2021-01-19T20:43:56+00:00"
+                },
+                "user": {
+                  "description": "User making the change",
+                  "type": "string",
+                  "example": "829 <hello@developerhub.io>"
+                },
+                "apiKey": {
+                  "description": "True if change was authenticated through an API Key",
+                  "type": "boolean",
+                  "example": false
+                }
+              }
+            }
+          },
+          "count": {
+            "description": "Number of hits retrieved",
+            "type": "integer",
+            "example": 20
+          },
+          "total": {
+            "description": "Total number of hits retrievable",
+            "type": "integer",
+            "example": 620
+          },
+          "cursor": {
+            "description": "Cursor for next page of results. Null value if there are no more results",
+            "type": "string",
+            "example": "XAr"
+          }
+        }
+      },
+      "ReaderAccess": {
+        "title": "Reader Access",
+        "description": "Reader Access",
+        "required": [
+          "email",
+          "expiresAt",
+          "created",
+          "revoked"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "description": "Reader e-mail address",
+            "type": "string",
+            "example": "peter@example.com"
+          },
+          "expiresAt": {
+            "description": "Date when the access expires. Null if it never expires.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "2022-04-20T19:03:14+0000"
+          },
+          "created": {
+            "description": "Date of access creation",
+            "type": "string",
+            "example": "2022-03-20T19:02:14+0000"
+          },
+          "revoked": {
+            "description": "Date when revoked. Null if not revoked.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "2022-03-22T20:02:15+0000"
+          }
+        }
+      },
+      "AllProject": {
+        "title": "AllProject",
+        "description": "All resources in a project",
+        "required": [
+          "page",
+          "documentation",
+          "reference",
+          "version"
+        ],
+        "type": "object",
+        "properties": {
+          "page": {
+            "description": "A key-value dictionary mapping of page ID to page details",
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "description": "Page title",
+                  "type": "string",
+                  "example": "Getting Started"
+                },
+                "updated": {
+                  "description": "Date of last update",
+                  "type": "string",
+                  "example": "2019-03-20T19:02:14+0000"
+                },
+                "documentationId": {
+                  "description": "Documentation ID",
+                  "type": "integer",
+                  "example": 412
+                },
+                "listed": {
+                  "description": "True if page is accessible for readers",
+                  "type": "boolean",
+                  "example": true
+                }
+              }
+            },
+            "example": {
+              "6177": {
+                "title": "Getting Started",
+                "updated": "2019-03-20T19:02:14+0000",
+                "documentationId": 412,
+                "listed": true
+              }
+            }
+          },
+          "documentation": {
+            "description": "A key-value dictionary mapping of documentation ID to documentation details",
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "description": "Documentation title",
+                  "type": "string",
+                  "example": "Getting Started"
+                },
+                "versionId": {
+                  "description": "Version ID",
+                  "type": "integer",
+                  "example": 310
+                },
+                "slug": {
+                  "description": "Slug of the documentation in the URL",
+                  "type": "string",
+                  "example": "documentation-title"
+                }
+              }
+            },
+            "example": {
+              "412": {
+                "title": "Support Center",
+                "versionId": 310,
+                "slug": "support-center"
+              }
+            }
+          },
+          "reference": {
+            "description": "A key-value dictionary mapping of reference ID to reference details",
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "description": "Reference title",
+                  "type": "string",
+                  "example": "Getting Started"
+                },
+                "versionId": {
+                  "description": "Version ID",
+                  "type": "integer",
+                  "example": 310
+                },
+                "slug": {
+                  "description": "Slug of the reference in the URL",
+                  "type": "string",
+                  "example": "reference-title"
+                }
+              }
+            },
+            "example": {
+              "917": {
+                "title": "Support Center",
+                "versionId": 310,
+                "slug": "support-center"
+              }
+            }
+          },
+          "version": {
+            "description": "A key-value dictionary mapping of version ID to version details",
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "description": "Version title",
+                  "type": "string",
+                  "example": "Getting Started"
+                },
+                "published": {
+                  "description": "True if it can be viewed by readers",
+                  "type": "boolean",
+                  "example": true
+                },
+                "slug": {
+                  "description": "Slug of the version in the URL",
+                  "type": "string",
+                  "example": "v1.0"
+                }
+              }
+            },
+            "example": {
+              "310": {
+                "name": "v1.0",
+                "published": true,
+                "slug": "v1.0"
+              }
+            }
+          }
+        }
+      }
+    },
+    "headers": {
+      "X-RateLimit-Limit": {
+        "schema": {
+          "type": "integer",
+          "example": 300
+        },
+        "description": "Requests permitted until reset time"
+      },
+      "X-RateLimit-Remaining": {
+        "schema": {
+          "type": "integer",
+          "example": 253
+        },
+        "description": "Requests consumed in current period"
+      },
+      "X-RateLimit-Reset": {
+        "schema": {
+          "type": "integer",
+          "example": 1611530395
+        },
+        "description": "Unix timestamp at which requests consumed will reset"
+      }
+    },
+    "securitySchemes": {
+      "Api-Key": {
+        "type": "apiKey",
+        "description": "Generate an API Key from [DeveloperHub.io platform](https://app.developerhub.io) and provide it in the header such as `--header \"X-Api-Key: <api-key>\"` for cURL for all the requests requiring this authentication.",
+        "name": "X-Api-Key",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "Api-Key": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Page",
+      "description": ""
+    },
+    {
+      "name": "Documentation",
+      "description": ""
+    },
+    {
+      "name": "Version",
+      "description": ""
+    },
+    {
+      "name": "Reference",
+      "description": ""
+    },
+    {
+      "name": "Project",
+      "description": ""
+    }
+  ]
+}

@@ -40,7 +40,7 @@ export default async function ProcessSpec(specUrl, sortTags) {
   */
 
   const openApiSpec = jsonParsedSpec;
-  const methods = ['get', 'put', 'post', 'delete', 'patch', 'options', 'head'];
+  const methods = ['get', 'put', 'post', 'delete', 'patch', 'options', 'head', 'query', 'trace'];
   const tags = [];
   let totalPathCount = 0;
   // For each path find the tag and push it into the corrosponding tag

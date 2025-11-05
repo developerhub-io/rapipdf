@@ -1,7 +1,7 @@
 const rapipdf = require('../dist');
 const fs = require('fs');
 
-rapipdf.generatePdfFromOpenAPISpec(JSON.parse(fs.readFileSync("api.json")), "api.pdf", {
+rapipdf.generatePdfFromOpenAPISpec(JSON.parse(fs.readFileSync("test/testcases/api32.json")), "test/output/api32.pdf", {
   pdfPrimaryColor: "#2672FB",
   pdfAlternateColor: "#183B7F",
   pdfStyles: {
